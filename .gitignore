@@ -1,2 +1,4 @@
 .env
 /zbx_env
+/npm_data
+/npm_letsencrypt

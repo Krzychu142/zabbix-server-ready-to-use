@@ -30,8 +30,8 @@ services:
     image: zabbix/zabbix-web-nginx-pgsql:7.0-ubuntu-latest
     container_name: zabbix-web
     restart: always
-    ports:
-    - "80:8080"
+    expose:
+    - "8080"
     environment:
     - DB_SERVER_HOST=${DB_SERVER_HOST}
     - POSTGRES_USER=${POSTGRES_USER}
@@ -41,6 +41,22 @@ services:
     - PHP_TZ=${PHP_TZ}
     depends_on:
     - zabbix-server
+
+  nginx-proxy:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: nginx-proxy
+    restart: always
+    ports:
+      # web proxy HTTP & HTTPS
+      - "80:80"
+      - "443:443"
+      # proxy admin panel
+      - "81:81"
+    volumes:
+      - ./npm_data:/data
+      - ./npm_letsencrypt:/etc/letsencrypt
+    depends_on:
+      - zabbix-web
 
 networks:
  default:
